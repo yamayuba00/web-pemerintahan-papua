@@ -49,4 +49,9 @@ class NewsCategoriesResource extends Resource
             'index' => ListNewsCategories::route('/'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 }

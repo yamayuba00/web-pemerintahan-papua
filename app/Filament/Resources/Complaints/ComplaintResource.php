@@ -50,4 +50,8 @@ class ComplaintResource extends Resource
             'edit' => EditComplaint::route('/{record}/edit'),
         ];
     }
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 }

@@ -49,4 +49,8 @@ class ArticlesResource extends Resource
             'edit' => EditArticles::route('/{record}/edit'),
         ];
     }
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 }

@@ -72,4 +72,9 @@ class ContactResource extends Resource
             'edit' => EditContact::route('/{record}/edit'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 }

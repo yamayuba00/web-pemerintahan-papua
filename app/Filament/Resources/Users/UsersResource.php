@@ -45,4 +45,8 @@ class UsersResource extends Resource
             'edit' => EditUsers::route('/{record}/edit'),
         ];
     }
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 }

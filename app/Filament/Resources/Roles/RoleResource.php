@@ -171,4 +171,9 @@ class RoleResource extends Resource
     {
         return FilamentShieldPlugin::get();
     }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 }

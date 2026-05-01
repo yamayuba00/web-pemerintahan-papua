@@ -84,4 +84,9 @@ class SliderResource extends Resource
             'index' => ListSliders::route('/'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 }

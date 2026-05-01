@@ -49,4 +49,9 @@ class NewsResource extends Resource
             'edit' => EditNews::route('/{record}/edit'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 }
