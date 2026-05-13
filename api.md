@@ -323,3 +323,37 @@
             "email": "test@gmail.com",
             "message": "Testings.."
         }
+
+### Complaints [GET]
+    End:http://localhost:8000/api/complaints 
+    Set Header (Wajib):
+        X-Internal-Key: 123123nadasdakqw21314004324
+        X-APP-Key: 123123nadasdakqw21314004325
+    Raw Body:
+    {
+        "status": 200,
+        "message": "Successfully retrieved complaints",
+        "data": [
+            {
+                "id": 1,
+                "title": "Test",
+                "description": "Eager Loading Tags: Dengan menambahkan tags:id,name di fungsi with(), kamu menghemat satu query database. Bayangkan jika ada 1000 user yang akses berita secara bersamaan, ini sangat menolong beban server",
+                "created_at": "2026-04-03T13:42:40.000000Z",
+                "updated_at": "2026-04-03T13:42:40.000000Z",
+                "complaint_links": [
+                    {
+                        "id": 1,
+                        "complaint_id": 1,
+                        "title": "Service A",
+                        "url": "http://localhost:8000/"
+                    },
+                    {
+                        "id": 2,
+                        "complaint_id": 1,
+                        "title": "Service B",
+                        "url": "http://localhost:8000/"
+                    }
+                ]
+            }
+        ]
+    }
