@@ -21,6 +21,7 @@ class ContactInformation extends TableWidget
                 TextColumn::make('name'),
                 TextColumn::make('email'),
                 TextColumn::make('message'),
+                TextColumn::make('phone_number'),
                 TextColumn::make('created_at')->dateTime(),
             ])->defaultSort('created_at', 'desc')
             ->filters([

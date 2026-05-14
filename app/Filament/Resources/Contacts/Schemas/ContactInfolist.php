@@ -17,6 +17,8 @@ class ContactInfolist
                     ->label('Email address'),
                 TextEntry::make('message')
                     ->columnSpanFull(),
+                TextEntry::make('phone_number')
+                    ->label('Phone number'),
                 IconEntry::make('is_read')
                     ->boolean(),
                 TextEntry::make('created_at')
