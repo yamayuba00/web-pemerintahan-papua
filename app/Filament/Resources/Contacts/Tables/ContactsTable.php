@@ -47,13 +47,14 @@ class ContactsTable
             ->recordActions([
                 ViewAction::make()->iconButton(),
                 Action::make('is_read')
-                    ->icon(fn (Contact $record) => $record->is_read ? 'heroicon-o-envelope' : 'heroicon-o-envelope-open')
-                    ->label(fn (Contact $record) => $record->is_read ? 'Mark Unread' : 'Mark Read')
+                    ->icon('heroicon-o-envelope-open')
+                    ->label('Mark Read')
                     ->action(function (Contact $record) {
-                        $record->update(['is_read' => !$record->is_read]);
+                        $record->update(['is_read' => true]);
                         return redirect(ContactResource::getUrl('view', ['record' => $record]));
                     })
-                    ->iconButton(),
+                    ->iconButton()
+                    ->visible(fn (Contact $record) => !$record->is_read),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
