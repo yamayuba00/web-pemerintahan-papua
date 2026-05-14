@@ -15,6 +15,8 @@ class Article extends Model
 
     use HasSeo;
 
+    protected $appends = ['featured_image_url'];
+
     public function tags()
     {
         return $this->morphToMany(Tags::class, 'taggable', 'taggables', 'taggable_id', 'tag_id');
@@ -48,5 +50,10 @@ class Article extends Model
             }
             $model->created_by = Auth::user()->id;
         });
+    }
+
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        return $this->featured_image ? asset('storage/' . $this->featured_image) : null;
     }
 }

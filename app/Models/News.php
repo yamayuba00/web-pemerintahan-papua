@@ -14,6 +14,8 @@ class News extends Model
     use HasSeo;
     protected $guarded = [];
 
+    protected $appends = ['featured_image_url'];
+
     public function categories()
     {
         return $this->morphToMany(Categories::class, 'categoryable', 'categoryables', 'categoryable_id', 'category_id');
@@ -53,5 +55,10 @@ class News extends Model
             }
             $model->created_by = Auth::user()->id;
         });
+    }
+
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        return $this->featured_image ? asset('storage/' . $this->featured_image) : null;
     }
 }
