@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\Contacts\Tables;
 
+use App\Models\Contact;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -16,29 +17,45 @@ class ContactsTable
     {
         return $table
             ->columns([
+                IconColumn::make('is_read')
+                    ->label('Status')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-envelope-open')
+                    ->falseIcon('heroicon-o-envelope')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->weight(fn (Contact $record) => $record->is_read ? null : 'bold'),
                 TextColumn::make('email')
                     ->label('Email address')
+                    ->searchable(),
+                TextColumn::make('phone_number')
+                    ->label('Phone')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('message')
+                    ->limit(50)
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([])
-            ->recordActions([])
+            ->recordActions([
+                ViewAction::make()->iconButton(),
+                Action::make('toggleRead')
+                    ->icon(fn (Contact $record) => $record->is_read ? 'heroicon-o-envelope' : 'heroicon-o-envelope-open')
+                    ->label(fn (Contact $record) => $record->is_read ? 'Mark Unread' : 'Mark Read')
+                    ->action(fn (Contact $record) => $record->update(['is_read' => !$record->is_read]))
+                    ->iconButton(),
+            ])
             ->toolbarActions([
-                // BulkActionGroup::make([
-                //     DeleteBulkAction::make(),
-                // ]),
-            ]);
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 }

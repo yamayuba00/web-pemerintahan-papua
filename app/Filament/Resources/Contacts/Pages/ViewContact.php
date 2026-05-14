@@ -14,4 +14,13 @@ class ViewContact extends ViewRecord
         return [];
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Auto mark as read saat dibuka
+        if (!$this->record->is_read) {
+            $this->record->update(['is_read' => true]);
+        }
+
+        return $data;
+    }
 }

@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\ApplicationService;
 use App\Models\Categories;
-use App\Models\Complaints;
 use App\Models\ComplaintLinks;
+use App\Models\Complaints;
 use App\Models\Settings;
 use App\Models\Slider;
 use App\Models\Tourism;
@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -48,76 +49,80 @@ class DatabaseSeeder extends Seeder
             'email' => 'info@papua.go.id',
         ]);
 
-        // Categories
-        $categories = ['Pemerintahan', 'Pendidikan', 'Kesehatan', 'Infrastruktur', 'Ekonomi'];
-        foreach ($categories as $category) {
-            Categories::create(['name' => $category]);
-        }
+        // // Categories
+        // $categories = ['Pemerintahan', 'Pendidikan', 'Kesehatan', 'Infrastruktur', 'Ekonomi'];
+        // foreach ($categories as $category) {
+        //     Categories::create(['name' => $category, 'slug' => Str::slug($category)]);
+        // }
 
-        // Sliders
-        Slider::create([
-            'title' => 'Selamat Datang di Papua',
-            'description' => 'Portal resmi Pemerintah Provinsi Papua',
-            'image' => null,
-            'is_active' => true,
-        ]);
+        // // Sliders
+        // Slider::create([
+        //     'title' => 'Selamat Datang di Papua',
+        //     'description' => 'Portal resmi Pemerintah Provinsi Papua',
+        //     'image' => null,
+        //     'is_active' => true,
+        // ]);
 
-        Slider::create([
-            'title' => 'Pembangunan Papua',
-            'description' => 'Membangun Papua untuk masa depan yang lebih baik',
-            'image' => null,
-            'is_active' => true,
-        ]);
+        // Slider::create([
+        //     'title' => 'Pembangunan Papua',
+        //     'description' => 'Membangun Papua untuk masa depan yang lebih baik',
+        //     'image' => null,
+        //     'is_active' => true,
+        // ]);
 
-        // Complaints
-        $complaint = Complaints::create([
-            'title' => 'Layanan Pengaduan Masyarakat',
-            'description' => 'Sampaikan pengaduan Anda terkait pelayanan publik di Provinsi Papua melalui kanal resmi berikut.',
-        ]);
+        // // Complaints
+        // $complaint = Complaints::create([
+        //     'title' => 'Layanan Pengaduan Masyarakat',
+        //     'description' => 'Sampaikan pengaduan Anda terkait pelayanan publik di Provinsi Papua melalui kanal resmi berikut.',
+        // ]);
 
-        ComplaintLinks::create([
-            'complaint_id' => $complaint->id,
-            'title' => 'LAPOR!',
-            'url' => 'https://www.lapor.go.id/',
-        ]);
+        // ComplaintLinks::create([
+        //     'complaint_id' => $complaint->id,
+        //     'title' => 'LAPOR!',
+        //     'url' => 'https://www.lapor.go.id/',
+        // ]);
 
-        ComplaintLinks::create([
-            'complaint_id' => $complaint->id,
-            'title' => 'SP4N LAPOR',
-            'url' => 'https://www.sp4n.go.id/',
-        ]);
+        // ComplaintLinks::create([
+        //     'complaint_id' => $complaint->id,
+        //     'title' => 'SP4N LAPOR',
+        //     'url' => 'https://www.sp4n.go.id/',
+        // ]);
 
-        // Tourism
-        $tourisms = [
-            [
-                'name' => 'Raja Ampat',
-                'location' => 'Kabupaten Raja Ampat',
-                'description' => 'Kepulauan dengan keindahan bawah laut kelas dunia, surga bagi penyelam dan pecinta alam.',
-                'category' => 'Wisata Alam',
-            ],
-            [
-                'name' => 'Danau Sentani',
-                'location' => 'Kabupaten Jayapura',
-                'description' => 'Danau terbesar di Papua dengan pemandangan indah dan festival budaya tahunan.',
-                'category' => 'Wisata Alam',
-            ],
-            [
-                'name' => 'Lembah Baliem',
-                'location' => 'Kabupaten Jayawijaya',
-                'description' => 'Lembah yang dihuni suku Dani dengan budaya dan tradisi yang masih terjaga.',
-                'category' => 'Wisata Budaya',
-            ],
-            [
-                'name' => 'Taman Nasional Lorentz',
-                'location' => 'Papua Tengah',
-                'description' => 'Situs Warisan Dunia UNESCO dengan keanekaragaman hayati dari pesisir hingga pegunungan salju.',
-                'category' => 'Wisata Alam',
-            ],
-        ];
+        // // Tourism
+        // $tourisms = [
+        //     [
+        //         'name' => 'Raja Ampat',
+        //         'slug' => 'raja-ampat',
+        //         'location' => 'Kabupaten Raja Ampat',
+        //         'description' => 'Kepulauan dengan keindahan bawah laut kelas dunia, surga bagi penyelam dan pecinta alam.',
+        //         'category' => 'Wisata Alam',
+        //     ],
+        //     [
+        //         'name' => 'Danau Sentani',
+        //         'slug' => 'danau-sentani',
+        //         'location' => 'Kabupaten Jayapura',
+        //         'description' => 'Danau terbesar di Papua dengan pemandangan indah dan festival budaya tahunan.',
+        //         'category' => 'Wisata Alam',
+        //     ],
+        //     [
+        //         'name' => 'Lembah Baliem',
+        //         'slug' => 'lembah-baliem',
+        //         'location' => 'Kabupaten Jayawijaya',
+        //         'description' => 'Lembah yang dihuni suku Dani dengan budaya dan tradisi yang masih terjaga.',
+        //         'category' => 'Wisata Budaya',
+        //     ],
+        //     [
+        //         'name' => 'Taman Nasional Lorentz',
+        //         'slug' => 'taman-nasional-lorentz',
+        //         'location' => 'Papua Tengah',
+        //         'description' => 'Situs Warisan Dunia UNESCO dengan keanekaragaman hayati dari pesisir hingga pegunungan salju.',
+        //         'category' => 'Wisata Alam',
+        //     ],
+        // ];
 
-        foreach ($tourisms as $tourism) {
-            Tourism::create($tourism);
-        }
+        // foreach ($tourisms as $tourism) {
+        //     Tourism::create($tourism);
+        // }
 
         // Application Services
         $services = [
