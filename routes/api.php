@@ -16,6 +16,10 @@ Route::middleware(['guest', 'encrypted'])->group(function () {
     Route::get('/articles', [CmsController::class, 'fetchArticles']);
     Route::get('/complaints', [CmsController::class, 'fetchComplaints']);
 
+    Route::get('/tourisms', [CmsController::class, 'fetchTourisms']);
+    Route::get('/tourisms/{slug}', [CmsController::class, 'fetchTourismBySlug']);
+
+    Route::get('/application-services', [CmsController::class, 'fetchApplicationServices']);
 
     Route::get('/settings', [CmsController::class, 'fetchSettings']);
 

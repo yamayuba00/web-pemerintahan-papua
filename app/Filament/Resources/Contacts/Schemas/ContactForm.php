@@ -19,6 +19,10 @@ class ContactForm
                     ->label('Email address')
                     ->email()
                     ->required(),
+                TextInput::make('phone_number')
+                    ->label('Phone Number')
+                    ->tel()
+                    ->nullable(),
                 Textarea::make('message')
                     ->required()
                     ->columnSpanFull(),

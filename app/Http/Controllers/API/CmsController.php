@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\ApplicationService;
 use App\Models\Article;
 use App\Models\Categories;
 use App\Models\Complaints;
@@ -10,6 +11,7 @@ use App\Models\Contact;
 use App\Models\News;
 use App\Models\Settings;
 use App\Models\Slider;
+use App\Models\Tourism;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -270,6 +272,7 @@ class CmsController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
+            'phone_number' => 'nullable|string|max:20',
             'message' => 'required|string',
         ]);
 
@@ -277,6 +280,7 @@ class CmsController extends Controller
             Contact::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
+                'phone_number' => $data['phone_number'] ?? null,
                 'message' => $data['message'],
             ]);
 
@@ -290,5 +294,62 @@ class CmsController extends Controller
                 'message' => 'Failed to submit contact form: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function fetchTourisms()
+    {
+        $tourisms = Tourism::when(request('q'), function ($query, $q) {
+            return $query->where('name', 'like', '%' . $q . '%')
+                ->orWhere('location', 'like', '%' . $q . '%')
+                ->orWhere('category', 'like', '%' . $q . '%');
+        })
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $item->image = $item->image ? asset('storage/' . $item->image) : null;
+                return $item;
+            });
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Successfully retrieved tourisms',
+            'data' => $tourisms
+        ]);
+    }
+
+    public function fetchTourismBySlug($slug)
+    {
+        $tourism = Tourism::where('slug', $slug)->first();
+
+        if (!$tourism) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Tourism not found',
+                'data' => null
+            ], 404);
+        }
+
+        $tourism->image = $tourism->image ? asset('storage/' . $tourism->image) : null;
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Successfully retrieved tourism detail',
+            'data' => $tourism
+        ]);
+    }
+
+    public function fetchApplicationServices()
+    {
+        $services = ApplicationService::when(request('q'), function ($query, $q) {
+            return $query->where('title', 'like', '%' . $q . '%');
+        })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Successfully retrieved application services',
+            'data' => $services
+        ]);
     }
 }
