@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Contacts\Tables;
 
+use App\Filament\Resources\Contacts\ContactResource;
 use App\Models\Contact;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -48,7 +49,10 @@ class ContactsTable
                 Action::make('is_read')
                     ->icon(fn (Contact $record) => $record->is_read ? 'heroicon-o-envelope' : 'heroicon-o-envelope-open')
                     ->label(fn (Contact $record) => $record->is_read ? 'Mark Unread' : 'Mark Read')
-                    ->action(fn (Contact $record) => $record->update(['is_read' => !$record->is_read]))
+                    ->action(function (Contact $record) {
+                        $record->update(['is_read' => !$record->is_read]);
+                        return redirect(ContactResource::getUrl('view', ['record' => $record]));
+                    })
                     ->iconButton(),
             ])
             ->toolbarActions([
