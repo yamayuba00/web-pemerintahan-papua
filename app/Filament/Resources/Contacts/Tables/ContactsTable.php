@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\Contacts\Tables;
 
 use App\Models\Contact;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -45,7 +45,7 @@ class ContactsTable
             ->filters([])
             ->recordActions([
                 ViewAction::make()->iconButton(),
-                Action::make('toggleRead')
+                Action::make('is_read')
                     ->icon(fn (Contact $record) => $record->is_read ? 'heroicon-o-envelope' : 'heroicon-o-envelope-open')
                     ->label(fn (Contact $record) => $record->is_read ? 'Mark Unread' : 'Mark Read')
                     ->action(fn (Contact $record) => $record->update(['is_read' => !$record->is_read]))
