@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\CmsController;
+use App\Http\Controllers\API\QuestionnaireController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest', 'encrypted'])->group(function () {
@@ -24,4 +25,10 @@ Route::middleware(['guest', 'encrypted'])->group(function () {
     Route::get('/settings', [CmsController::class, 'fetchSettings']);
 
     Route::post('contact', [CmsController::class, 'submitContactForm']);
+
+    // Questionnaire
+    Route::get('/questionnaires', [QuestionnaireController::class, 'index']);
+    Route::get('/questionnaires/{slug}', [QuestionnaireController::class, 'show']);
+    Route::post('/questionnaires/{slug}/submit', [QuestionnaireController::class, 'submit']);
+    Route::get('/questionnaires/{slug}/statistics', [QuestionnaireController::class, 'statistics']);
 });

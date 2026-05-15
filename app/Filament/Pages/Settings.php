@@ -53,6 +53,12 @@ class Settings extends Page implements HasForms
             'phone' => ModelsSettings::get('phone'),
             'email' => ModelsSettings::get('email'),
 
+            'signer_name' => ModelsSettings::get('signer_name'),
+            'signer_position' => ModelsSettings::get('signer_position'),
+            'signer_nip' => ModelsSettings::get('signer_nip'),
+            'sign_location' => ModelsSettings::get('sign_location'),
+            'use_digital_signature' => ModelsSettings::get('use_digital_signature') ? true : false,
+
         ]);
     }
 
@@ -115,7 +121,6 @@ class Settings extends Page implements HasForms
             Section::make('Contact')
                 ->schema([
                     Forms\Components\TextInput::make('address')
-                        // format address
                         ->maxLength(255)
                         ->required(),
                     Forms\Components\TextInput::make('phone')
@@ -128,6 +133,28 @@ class Settings extends Page implements HasForms
                     Forms\Components\TextInput::make('email')
                         ->email()
                         ->required(),
+                ])
+                ->columns(2),
+
+            Section::make('Tanda Tangan Dokumen')
+                ->description('Data penandatangan untuk cetak dokumen (SKM, dll)')
+                ->schema([
+                    Forms\Components\TextInput::make('sign_location')
+                        ->label('Lokasi')
+                        ->placeholder('Contoh: Nabire'),
+                    Forms\Components\TextInput::make('signer_position')
+                        ->label('Jabatan')
+                        ->placeholder('Contoh: Kepala DPMPTSP Provinsi Papua Tengah'),
+                    Forms\Components\TextInput::make('signer_name')
+                        ->label('Nama Penandatangan')
+                        ->placeholder('Contoh: MARTHEN G. ERARI, SKM. M.Ec.Dev'),
+                    Forms\Components\TextInput::make('signer_nip')
+                        ->label('NIP')
+                        ->placeholder('Contoh: 19680326 199302 1 001'),
+                    Forms\Components\Toggle::make('use_digital_signature')
+                        ->label('Gunakan Tanda Tangan Digital')
+                        ->helperText('Jika aktif, QR code dari NIP akan ditampilkan saat print. Jika tidak, kosong untuk cap basah.')
+                        ->reactive(),
                 ])
                 ->columns(2),
         ];
@@ -161,6 +188,12 @@ class Settings extends Page implements HasForms
         ModelsSettings::set('address', $data['address']);
         ModelsSettings::set('phone', $data['phone']);
         ModelsSettings::set('email', $data['email']);
+
+        ModelsSettings::set('signer_name', $data['signer_name']);
+        ModelsSettings::set('signer_position', $data['signer_position']);
+        ModelsSettings::set('signer_nip', $data['signer_nip']);
+        ModelsSettings::set('sign_location', $data['sign_location']);
+        ModelsSettings::set('use_digital_signature', $data['use_digital_signature'] ? 1 : 0);
 
         Notification::make()
             ->title('Berhasil')

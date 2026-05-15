@@ -455,3 +455,228 @@ Mengirim pesan kontak.
     }
 }
 ```
+
+---
+
+## 10. Questionnaires (Kuesioner)
+
+### `GET /questionnaires`
+
+Mengambil daftar kuesioner yang aktif.
+
+**Response:**
+
+```json
+{
+    "status": 200,
+    "message": "Successfully retrieved questionnaires",
+    "data": [
+        {
+            "id": 1,
+            "title": "Survei Kepuasan Layanan",
+            "slug": "survei-kepuasan-layanan",
+            "description": "Kuesioner untuk mengukur kepuasan masyarakat.",
+            "created_at": "2026-05-15T00:00:00.000000Z"
+        }
+    ]
+}
+```
+
+### `GET /questionnaires/{slug}`
+
+Mengambil detail kuesioner beserta pertanyaan (untuk render form di frontend).
+
+**Response:**
+
+```json
+{
+    "status": 200,
+    "message": "Successfully retrieved questionnaire",
+    "data": {
+        "id": 1,
+        "title": "Survei Kepuasan Layanan",
+        "slug": "survei-kepuasan-layanan",
+        "description": "Kuesioner untuk mengukur kepuasan masyarakat.",
+        "questions": [
+            {
+                "id": 1,
+                "question": "Bagaimana penilaian Anda terhadap pelayanan kami?",
+                "type": "rating",
+                "options": null,
+                "is_required": true,
+                "order": 1
+            },
+            {
+                "id": 2,
+                "question": "Layanan apa yang Anda gunakan?",
+                "type": "dropdown",
+                "options": ["Administrasi", "Kesehatan", "Pendidikan"],
+                "is_required": true,
+                "order": 2
+            },
+            {
+                "id": 3,
+                "question": "Fasilitas apa yang perlu ditingkatkan?",
+                "type": "checkbox",
+                "options": ["Ruang Tunggu", "Parkir", "Toilet", "AC"],
+                "is_required": false,
+                "order": 3
+            },
+            {
+                "id": 4,
+                "question": "Saran dan masukan Anda",
+                "type": "text",
+                "options": null,
+                "is_required": false,
+                "order": 4
+            }
+        ]
+    }
+}
+```
+
+### `POST /questionnaires/{slug}/submit`
+
+Submit jawaban kuesioner.
+
+**Request Body:**
+
+```json
+{
+    "respondent_name": "John Doe",
+    "respondent_email": "john@example.com",
+    "answers": [
+        {
+            "question_id": 1,
+            "answer": "5",
+            "answer_array": null
+        },
+        {
+            "question_id": 2,
+            "answer": "Administrasi",
+            "answer_array": null
+        },
+        {
+            "question_id": 3,
+            "answer": null,
+            "answer_array": ["Ruang Tunggu", "Parkir"]
+        },
+        {
+            "question_id": 4,
+            "answer": "Pelayanan sudah baik, terima kasih.",
+            "answer_array": null
+        }
+    ]
+}
+```
+
+**Catatan tipe jawaban:**
+
+| Tipe | Field yang diisi |
+|------|-----------------|
+| `text` | `answer` (string) |
+| `dropdown` | `answer` (string, salah satu dari options) |
+| `radio` | `answer` (string, salah satu dari options) |
+| `rating` | `answer` (string angka "1"-"5") |
+| `checkbox` | `answer_array` (array of string dari options) |
+
+**Response (Success):**
+
+```json
+{
+    "status": 201,
+    "message": "Jawaban berhasil disimpan. Terima kasih!"
+}
+```
+
+**Response (Validation Error):**
+
+```json
+{
+    "status": 422,
+    "message": "Semua pertanyaan wajib harus dijawab.",
+    "data": null
+}
+```
+
+### `GET /questionnaires/{slug}/statistics`
+
+Mengambil statistik/hasil kuesioner dengan filter waktu.
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `days` | int/string | `1` | Filter periode: `1`, `7`, `30`, atau `all` |
+
+**Contoh:**
+- `/questionnaires/{slug}/statistics` → data 1 hari terakhir
+- `/questionnaires/{slug}/statistics?days=7` → data 7 hari terakhir
+- `/questionnaires/{slug}/statistics?days=30` → data 30 hari terakhir
+- `/questionnaires/{slug}/statistics?days=all` → semua data
+
+**Response:**
+
+```json
+{
+    "status": 200,
+    "message": "Successfully retrieved questionnaire statistics",
+    "data": {
+        "title": "Survei Kepuasan Layanan",
+        "description": "Kuesioner untuk mengukur kepuasan masyarakat.",
+        "scoring_type": "skm",
+        "total_responses": 50,
+        "filter_days": "7",
+        "ikm": 83.11,
+        "mutu": {
+            "grade": "B",
+            "label": "Baik"
+        },
+        "chart": {
+            "per_question": [
+                {
+                    "label": "Kualitas pelayanan",
+                    "value": 3.5,
+                    "max": 4
+                },
+                {
+                    "label": "Kecepatan layanan",
+                    "value": 3.0,
+                    "max": 4,
+                    "distribution": {
+                        "Sangat Baik": 10,
+                        "Baik": 25,
+                        "Kurang Baik": 15
+                    }
+                }
+            ],
+            "responses_per_month": {
+                "2026-04": 20,
+                "2026-05": 30
+            }
+        },
+        "questions": [
+            {
+                "id": 1,
+                "question": "Kualitas pelayanan",
+                "type": "radio",
+                "options": ["Tidak Baik", "Kurang Baik", "Baik", "Sangat Baik"],
+                "total_answers": 50,
+                "summary": {
+                    "Sangat Baik": 22,
+                    "Baik": 15,
+                    "Kurang Baik": 8,
+                    "Tidak Baik": 5
+                }
+            }
+        ]
+    }
+}
+```
+
+**Catatan Perhitungan IKM (mode SKM):**
+- NRR per unsur = Jumlah nilai per unsur ÷ jumlah responden
+- Nilai numerik radio/dropdown = posisi opsi (opsi ke-1 = 1, opsi ke-2 = 2, dst)
+- NRR Tertimbang = NRR × bobot (1 ÷ jumlah unsur)
+- IKM = Jumlah NRR Tertimbang × 25
+- Mutu: A (88,31-100) Sangat Baik, B (76,61-88,30) Baik, C (65,00-76,60) Kurang Baik, D (25,00-64,99) Tidak Baik
