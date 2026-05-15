@@ -703,7 +703,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="/admin/settings" class="qr-tab qr-tab--active" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
+                    <a href="/settings" class="qr-tab qr-tab--active" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
                         ⚙️ Ubah di Settings
                     </a>
                 </div>
