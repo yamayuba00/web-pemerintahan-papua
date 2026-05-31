@@ -16,6 +16,11 @@ class Tourism extends Model
         'description',
         'image',
         'category',
+        'is_favorite',
+    ];
+
+    protected $casts = [
+        'is_favorite' => 'boolean',
     ];
 
     protected static function booted(): void

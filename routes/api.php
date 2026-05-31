@@ -22,6 +22,10 @@ Route::middleware(['guest', 'encrypted'])->group(function () {
 
     Route::get('/application-services', [CmsController::class, 'fetchApplicationServices']);
 
+    Route::get('/poster-popup', [CmsController::class, 'fetchPosterPopup']);
+
+    Route::get('/regulations', [CmsController::class, 'fetchRegulations']);
+
     Route::get('/settings', [CmsController::class, 'fetchSettings']);
 
     Route::post('contact', [CmsController::class, 'submitContactForm']);

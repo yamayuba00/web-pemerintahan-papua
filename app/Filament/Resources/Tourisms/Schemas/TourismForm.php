@@ -4,8 +4,9 @@ namespace App\Filament\Resources\Tourisms\Schemas;
 
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 
 class TourismForm
@@ -27,8 +28,9 @@ class TourismForm
                         ->maxLength(255)
                         ->nullable(),
 
-                    Textarea::make('description')
-                        ->rows(5)
+                    RichEditor::make('description')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsDisk('public')
                         ->nullable(),
 
                     FileUpload::make('image')
@@ -37,6 +39,10 @@ class TourismForm
                         ->directory('tourism')
                         ->imagePreviewHeight('200')
                         ->nullable(),
+
+                    Toggle::make('is_favorite')
+                        ->label('Jadikan Favorit')
+                        ->default(false),
                 ])->columns(1),
             ])->columns(1);
     }

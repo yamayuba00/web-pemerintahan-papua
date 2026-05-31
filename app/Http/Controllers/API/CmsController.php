@@ -9,6 +9,8 @@ use App\Models\Categories;
 use App\Models\Complaints;
 use App\Models\Contact;
 use App\Models\News;
+use App\Models\PosterPopup;
+use App\Models\Regulation;
 use App\Models\Settings;
 use App\Models\Slider;
 use App\Models\Tourism;
@@ -86,6 +88,7 @@ class CmsController extends Controller
                 'featured_image' => $item->featured_image ? asset('storage/' . $item->featured_image) : null,
                 'published_at' => $item->published_at,
                 'status' => $item->status,
+                'is_favorite' => (bool) $item->is_favorite,
                 'author' => $item->author ? $item->author->name : null,
                 'category' => $item->categories->first()?->name,
                 'created_at' => $item->created_at,
@@ -177,6 +180,7 @@ class CmsController extends Controller
                 'featured_image' => $item->featured_image ? asset('storage/' . $item->featured_image) : null,
                 'published_at' => $item->published_at,
                 'status' => $item->status,
+                'is_favorite' => (bool) $item->is_favorite,
                 'author' => $item->author ? $item->author->name : null,
                 'category' => $item->categories->first()?->name,
                 'created_at' => $item->created_at,
@@ -350,6 +354,34 @@ class CmsController extends Controller
             'status' => 200,
             'message' => 'Successfully retrieved application services',
             'data' => $services
+        ]);
+    }
+
+    public function fetchPosterPopup()
+    {
+        $poster = PosterPopup::where('is_active', true)->latest()->first();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Successfully retrieved poster popup',
+            'data' => $poster
+        ]);
+    }
+
+    public function fetchRegulations()
+    {
+        $query = Regulation::query();
+
+        if (request('type')) {
+            $query->where('type', request('type'));
+        }
+
+        $regulations = $query->orderBy('created_at', 'desc')->get();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Successfully retrieved regulations',
+            'data' => $regulations
         ]);
     }
 }

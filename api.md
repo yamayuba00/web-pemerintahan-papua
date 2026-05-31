@@ -186,6 +186,7 @@ Mengambil daftar berita (paginated, 10 per halaman).
                 "featured_image": "http://localhost:8000/storage/news/image.webp",
                 "published_at": "2026-04-03 03:15:58",
                 "status": "published",
+                "is_favorite": false,
                 "author": "CMS Papua",
                 "category": "Pemerintahan",
                 "created_at": "2026-04-03T03:15:58.000000Z",
@@ -387,8 +388,81 @@ Mengambil daftar layanan aplikasi.
 
 ---
 
-### 9. Contact
+### 9. Poster Popup
 
+#### `GET /poster-popup`
+
+Mengambil poster popup yang aktif (hanya 1).
+
+**Response:**
+
+```json
+{
+    "status": 200,
+    "message": "Successfully retrieved poster popup",
+    "data": {
+        "id": 1,
+        "image": "posters/popup.webp",
+        "image_url": "http://localhost:8000/storage/posters/popup.webp",
+        "link": "https://example.com",
+        "is_active": true,
+        "created_at": "2026-05-17T00:00:00.000000Z",
+        "updated_at": "2026-05-17T00:00:00.000000Z"
+    }
+}
+```
+
+Jika tidak ada poster aktif, `data` bernilai `null`.
+
+---
+
+### 10. Regulations (Regulasi & Publikasi Data)
+
+#### `GET /regulations`
+
+Mengambil daftar regulasi dan publikasi data.
+
+**Query Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `type` | string | (optional) Filter: `regulasi` atau `publikasi` |
+
+**Contoh:**
+- `/regulations` → semua data
+- `/regulations?type=regulasi` → hanya regulasi
+- `/regulations?type=publikasi` → hanya publikasi data
+
+**Response:**
+
+```json
+{
+    "status": 200,
+    "message": "Successfully retrieved regulations",
+    "data": [
+        {
+            "id": 1,
+            "title": "Perda No. 1 Tahun 2026",
+            "link": "https://example.com/perda-1-2026.pdf",
+            "type": "regulasi",
+            "created_at": "2026-05-18T00:00:00.000000Z",
+            "updated_at": "2026-05-18T00:00:00.000000Z"
+        },
+        {
+            "id": 2,
+            "title": "Data Statistik Penduduk 2026",
+            "link": "https://example.com/statistik-2026.pdf",
+            "type": "publikasi",
+            "created_at": "2026-05-18T00:00:00.000000Z",
+            "updated_at": "2026-05-18T00:00:00.000000Z"
+        }
+    ]
+}
+```
+
+---
+
+### 11. Contact
 #### `POST /contact`
 
 Mengirim pesan kontak.

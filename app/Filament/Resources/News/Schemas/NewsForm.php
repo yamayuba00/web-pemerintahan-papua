@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Str;
 
 class NewsForm
@@ -81,7 +82,11 @@ class NewsForm
 
                                 TagsInput::make('tags')
                                     ->placeholder('Separate tags with Enter or Tab')
-                                    ->dehydrated(false)
+                                    ->dehydrated(false),
+
+                                Toggle::make('is_favorite')
+                                    ->label('Jadikan Favorit')
+                                    ->default(false)
                             ]),
 
                     ])->columnSpan(1),

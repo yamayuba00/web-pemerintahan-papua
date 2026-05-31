@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -32,6 +33,15 @@ class TourismsTable
                     ->badge()
                     ->formatStateUsing(fn(?string $state): string => $state ? Str::upper($state) : '-')
                     ->sortable(),
+                IconColumn::make('is_favorite')
+                    ->label('Favorit')
+                    ->boolean()
+                    ->trueIcon('heroicon-s-star')
+                    ->falseIcon('heroicon-o-star')
+                    ->trueColor('warning')
+                    ->action(
+                        fn ($record) => $record->update(['is_favorite' => !$record->is_favorite])
+                    ),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
