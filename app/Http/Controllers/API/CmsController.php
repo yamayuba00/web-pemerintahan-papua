@@ -308,11 +308,12 @@ class CmsController extends Controller
                 ->orWhere('category', 'like', '%' . $q . '%');
         })
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($item) {
-                $item->image = $item->image ? asset('storage/' . $item->image) : null;
-                return $item;
-            });
+            ->paginate(10);
+
+        $tourisms->setCollection($tourisms->getCollection()->map(function ($item) {
+            $item->image = $item->image ? asset('storage/' . $item->image) : null;
+            return $item;
+        }));
 
         return response()->json([
             'status' => 200,
