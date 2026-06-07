@@ -11,6 +11,7 @@ class Regulation extends Model
     protected $fillable = [
         'title',
         'link',
+        'document',
         'type',
     ];
 

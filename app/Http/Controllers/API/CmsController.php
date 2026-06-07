@@ -377,7 +377,10 @@ class CmsController extends Controller
             $query->where('type', request('type'));
         }
 
-        $regulations = $query->orderBy('created_at', 'desc')->get();
+        $regulations = $query->orderBy('created_at', 'desc')->get()->map(function ($item) {
+            $item->document_url = $item->document ? asset('storage/' . $item->document) : null;
+            return $item;
+        });
 
         return response()->json([
             'status' => 200,
