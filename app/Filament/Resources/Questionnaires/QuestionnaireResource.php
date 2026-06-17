@@ -23,6 +23,8 @@ class QuestionnaireResource extends Resource
     protected static string | UnitEnum | null $navigationGroup = 'Questionnaire';
     protected static ?int $navigationSort = 6;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
     public static function form(Schema $schema): Schema

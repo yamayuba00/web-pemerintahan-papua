@@ -25,11 +25,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User
-        // User::create([
-        //     'name' => 'CMS Papua',
-        //     'email' => 'cms@papua.go.id',
-        //     'password' => Hash::make('password123'),
-        // ]);
+        User::create([
+            'name' => 'CMS Papua',
+            'email' => 'cms@papua.go.id',
+            'password' => Hash::make('password123'),
+        ]);
 
         // Settings
         Settings::create([

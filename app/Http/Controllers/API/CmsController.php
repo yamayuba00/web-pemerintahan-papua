@@ -36,7 +36,32 @@ class CmsController extends Controller
         $categories = Categories::when(request('q'), function ($query, $q) {
             return $query->where('name', 'like', '%' . $q . '%');
         })
-            ->lazy();
+            ->orderBy('name')
+            ->paginate(request('per_page', 10));
+
+        // Ambil categoryable_types dari tabel pivot untuk setiap kategori
+        $categoryIds = $categories->pluck('id');
+        $typeMap = \DB::table('categoryables')
+            ->whereIn('category_id', $categoryIds)
+            ->select('category_id', 'categoryable_type')
+            ->distinct()
+            ->get()
+            ->groupBy('category_id')
+            ->map(fn($items) => $items->pluck('categoryable_type')
+                ->map(fn($type) => strtolower(class_basename($type)))
+                ->toArray()
+            );
+
+        $categories->getCollection()->transform(function ($item) use ($typeMap) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'slug' => $item->slug,
+                'types' => $typeMap[$item->id] ?? [],
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+            ];
+        });
 
         return response()->json([
             'status' => 200,
@@ -48,20 +73,39 @@ class CmsController extends Controller
     // categories by slug
     public function fetchNewsBySlugCategories($slug)
     {
-        $news = News::with(['author:id,name', 'categories:id,name']) // Ganti ke 'categories'
+        $news = News::with(['author:id,name', 'categories:id,name'])
             ->where('status', 'published')
             ->whereHas('categories', function ($q) use ($slug) {
                 $q->where('slug', $slug);
             })
             ->when(request('q'), function ($query, $q) {
-                return $query->where('title', 'like', '%' . $q . '%')
-                    ->orWhere('status', 'like', '%' . $q . '%');
-            });
+                return $query->where('title', 'like', '%' . $q . '%');
+            })
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
+
+        $news->setCollection($news->getCollection()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'title' => $item->title,
+                'slug' => $item->slug,
+                'excerpt' => $item->excerpt,
+                'content' => $item->content,
+                'featured_image' => $item->featured_image ? asset('storage/' . $item->featured_image) : null,
+                'published_at' => $item->published_at,
+                'status' => $item->status,
+                'is_favorite' => (bool) $item->is_favorite,
+                'author' => $item->author ? $item->author->name : null,
+                'category' => $item->categories->first()?->name,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+            ];
+        }));
 
         return response()->json([
             'status' => 200,
             'message' => 'Successfully retrieved News by category: ' . $slug,
-            'data' => $news->orderBy('published_at', 'desc')->get() // Gunakan get() jika datanya sedikit, atau paginate()
+            'data' => $news
         ]);
     }
 
@@ -69,6 +113,11 @@ class CmsController extends Controller
     {
         $news = News::with(['author:id,name', 'categories:id,name'])
             ->where('status', 'published')
+            ->when(request('category'), function ($query, $categorySlug) {
+                return $query->whereHas('categories', function ($q) use ($categorySlug) {
+                    $q->where('slug', $categorySlug);
+                });
+            })
             ->when(request('q'), function ($query, $searchTerm) {
                 return $query->where(function ($q) use ($searchTerm) {
                     $q->where('title', 'like', '%' . $searchTerm . '%')
@@ -161,6 +210,11 @@ class CmsController extends Controller
     {
         $articles = Article::with(['author:id,name', 'categories:id,name'])
             ->where('status', 'published')
+            ->when(request('category'), function ($query, $categorySlug) {
+                return $query->whereHas('categories', function ($q) use ($categorySlug) {
+                    $q->where('slug', $categorySlug);
+                });
+            })
             ->when(request('q'), function ($query, $searchTerm) {
                 return $query->where(function ($q) use ($searchTerm) {
                     $q->where('title', 'like', '%' . $searchTerm . '%')

@@ -20,6 +20,7 @@ class ComplaintResource extends Resource
     protected static ?string $model = Complaints::class;
     protected static string | UnitEnum | null $navigationGroup = 'Management Content';
 
+    protected static bool $shouldRegisterNavigation = false;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

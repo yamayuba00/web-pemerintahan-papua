@@ -88,13 +88,26 @@ Mengambil daftar slider yang aktif.
 
 #### `GET /categories`
 
-Mengambil daftar kategori.
+Mengambil daftar kategori (paginated, 10 per halaman).
 
 **Query Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `q` | string | (optional) Filter berdasarkan nama |
+| `page` | int | (optional) Nomor halaman |
+| `per_page` | int | (optional) Jumlah per halaman (default 10) |
+
+**Keterangan:**
+- `types` berisi array `categoryable_type` dari tabel pivot `categoryables`
+  - `news` → kategori terhubung ke berita
+  - `article` → kategori terhubung ke artikel
+- Bisa berisi salah satu atau keduanya (`["news", "article"]`)
+
+**Contoh:**
+- `/categories` → semua kategori (paginated)
+- `/categories?q=pemerintahan` → filter kategori dengan nama "pemerintahan"
+- `/categories?per_page=100` → 100 kategori per halaman
 
 **Response:**
 
@@ -102,21 +115,53 @@ Mengambil daftar kategori.
 {
     "status": 200,
     "message": "Successfully retrieved categories",
-    "data": [
-        {
-            "id": 1,
-            "name": "Pemerintahan",
-            "slug": "pemerintahan",
-            "created_at": "2026-04-03T03:15:16.000000Z",
-            "updated_at": "2026-04-03T03:15:16.000000Z"
-        }
-    ]
+    "data": {
+        "current_page": 1,
+        "data": [
+            {
+                "id": 1,
+                "name": "Pemerintahan",
+                "slug": "pemerintahan",
+                "types": ["news", "article"],
+                "created_at": "2026-04-03T03:15:16.000000Z",
+                "updated_at": "2026-04-03T03:15:16.000000Z"
+            },
+            {
+                "id": 2,
+                "name": "Ekonomi",
+                "slug": "ekonomi",
+                "types": ["news"],
+                "created_at": "2026-04-03T03:15:16.000000Z",
+                "updated_at": "2026-04-03T03:15:16.000000Z"
+            }
+        ],
+        "first_page_url": "http://localhost:8000/api/categories?page=1",
+        "from": 1,
+        "last_page": 1,
+        "last_page_url": "http://localhost:8000/api/categories?page=1",
+        "next_page_url": null,
+        "per_page": 10,
+        "prev_page_url": null,
+        "to": 2,
+        "total": 2
+    }
 }
 ```
 
 #### `GET /category/{slug}`
 
-Mengambil berita berdasarkan slug kategori.
+Mengambil berita berdasarkan slug kategori (paginated, 10 per halaman).
+
+**Query Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `q` | string | (optional) Pencarian berdasarkan judul |
+| `page` | int | (optional) Nomor halaman |
+
+**Contoh:**
+- `/category/pemerintahan` → berita kategori Pemerintahan
+- `/category/pemerintahan?q=anggaran` → filter berita kategori Pemerintahan dengan keyword "anggaran"
 
 **Response:**
 
@@ -124,32 +169,35 @@ Mengambil berita berdasarkan slug kategori.
 {
     "status": 200,
     "message": "Successfully retrieved News by category: pemerintahan",
-    "data": [
-        {
-            "id": 1,
-            "category_id": 1,
-            "title": "Judul Berita",
-            "slug": "judul-berita",
-            "excerpt": "Ringkasan berita...",
-            "content": "<p>Isi berita lengkap.</p>",
-            "featured_image": "news/image.webp",
-            "published_at": "2026-04-03 03:15:58",
-            "status": "published",
-            "created_by": 1,
-            "created_at": "2026-04-03T03:15:58.000000Z",
-            "updated_at": "2026-04-03T03:15:59.000000Z",
-            "author": {
+    "data": {
+        "current_page": 1,
+        "data": [
+            {
                 "id": 1,
-                "name": "CMS Papua"
-            },
-            "categories": [
-                {
-                    "id": 1,
-                    "name": "Pemerintahan"
-                }
-            ]
-        }
-    ]
+                "title": "Judul Berita",
+                "slug": "judul-berita",
+                "excerpt": "Ringkasan berita...",
+                "content": "<p>Isi berita lengkap.</p>",
+                "featured_image": "http://localhost:8000/storage/news/image.webp",
+                "published_at": "2026-04-03 03:15:58",
+                "status": "published",
+                "is_favorite": false,
+                "author": "CMS Papua",
+                "category": "Pemerintahan",
+                "created_at": "2026-04-03T03:15:58.000000Z",
+                "updated_at": "2026-04-03T03:15:59.000000Z"
+            }
+        ],
+        "first_page_url": "http://localhost:8000/api/category/pemerintahan?page=1",
+        "from": 1,
+        "last_page": 1,
+        "last_page_url": "http://localhost:8000/api/category/pemerintahan?page=1",
+        "next_page_url": null,
+        "per_page": 10,
+        "prev_page_url": null,
+        "to": 1,
+        "total": 1
+    }
 }
 ```
 
@@ -165,8 +213,14 @@ Mengambil daftar berita (paginated, 10 per halaman).
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
+| `category` | string | (optional) Filter berdasarkan slug kategori |
 | `q` | string | (optional) Pencarian berdasarkan judul/konten |
 | `page` | int | (optional) Nomor halaman |
+
+**Contoh:**
+- `/news` → semua berita
+- `/news?category=pemerintahan` → berita kategori Pemerintahan
+- `/news?category=pemerintahan&q=anggaran` → berita kategori Pemerintahan dengan keyword "anggaran"
 
 **Response:**
 
@@ -260,8 +314,14 @@ Mengambil daftar artikel (paginated, 10 per halaman).
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
+| `category` | string | (optional) Filter berdasarkan slug kategori |
 | `q` | string | (optional) Pencarian berdasarkan judul/konten |
 | `page` | int | (optional) Nomor halaman |
+
+**Contoh:**
+- `/articles` → semua artikel
+- `/articles?category=pemerintahan` → artikel kategori Pemerintahan
+- `/articles?category=pemerintahan&q=anggaran` → artikel kategori Pemerintahan dengan keyword "anggaran"
 
 **Response:** Sama seperti `/news` dengan tipe data artikel.
 

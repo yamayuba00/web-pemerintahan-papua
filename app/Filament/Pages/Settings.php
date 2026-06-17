@@ -24,6 +24,7 @@ class Settings extends Page implements HasForms
 
     protected static string|UnitEnum|null $navigationGroup = 'Configuration';
     protected static ?int $navigationSort = 999;
+    protected static bool $shouldRegisterNavigation = false;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Cog;
 
     protected string $view = 'filament.pages.settings';

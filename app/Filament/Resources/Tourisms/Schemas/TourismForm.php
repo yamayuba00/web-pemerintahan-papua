@@ -26,7 +26,8 @@ class TourismForm
 
                     TextInput::make('category')
                         ->maxLength(255)
-                        ->nullable(),
+                        ->nullable()
+                        ->hiddenOn('create'),
 
                     RichEditor::make('description')
                         ->fileAttachmentsDirectory('attachments')
